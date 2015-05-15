@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Space test</title>
+
+    <script src="/libs/babylon.2.1-beta.debug.js"></script>
+    <script src="/source/A3D.js"></script>
+    <script src="/source/classes/Game.js"></script>
+    <script src="/source/classes/Actor.js"></script>
+    <script src="/source/classes/Player.js"></script>
+    <script src="/source/classes/Scene.js"></script>
+    <script src="/source/classes/Camera.js"></script>
+    <script src="/source/classes/Controls.js"></script>
+    <script src="/source/classes/Input.js"></script>
+    <script src="/source/classes/Resource.js"></script>
+    <script src="/source/classes/Keyboard.js"></script>
+
+    <script src='Scroller.js'></script>
+    <script src='Scroller.Player.js'></script>
+
+
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+<script>
+    var game = new A3D.Game.Scroller({
+        canvasId:'renderCanvas',
+        playerName : 'Actor.Player',
+        collisionNames : ['Icosphere','Cube']
+        
+    });
+    var scene;//wrong it needs to one scene to handle all of the "Stuff"
+    game.setupScene('/Space/scenes/','nick.babylon', function(game){
+        
+        for(s in game.activeScenes){
+           // game.activeScenes[s].b3Dscene.debugLayer.show();
+            scene = game.activeScenes[s];
+        }
+        
+        game.addRunFunction({
+            name : 'testCollisions',
+            func : function(){
+               for(e in scene.actors){
+                   if(!(scene.actors[e] instanceof A3D.Game.Scroller.Player)){
+                       if(game.player.b3Dactor.intersectsMesh(scene.actors[e].b3Dactor, true)){
+                           if(!game.player.collidedTime || (Date.now() - game.player.collidedTime) > 500){
+                               if(game.player.resources['lives'].subtract(1) > 0){
+                                   game.player.b3Dactor.position.x -= 5;//TODO don't do this make a shake function instead
+                                   game.player.collidedTime = Date.now();
+                                   console.log('inside '+scene.actors[e].name+"'s Bounding block");
+                                } else {
+                                   console.log('You Loose');
+                                   game.b3Dengine.stopRenderLoop();
+                               }
+                           }
+                       }
+                   }
+               }
+            }
+        });
+        
+        game.run();
+    });
+</script>
+ </body>
+</html>
