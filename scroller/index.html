@@ -4,19 +4,19 @@
     <title>Space test</title>
 
     <script src="/libs/babylon.2.1-beta.debug.js"></script>
-    <script src="/source/A3D.js"></script>
-    <script src="/source/classes/Game.js"></script>
-    <script src="/source/classes/Actor.js"></script>
-    <script src="/source/classes/Player.js"></script>
-    <script src="/source/classes/Scene.js"></script>
-    <script src="/source/classes/Camera.js"></script>
-    <script src="/source/classes/Controls.js"></script>
-    <script src="/source/classes/Input.js"></script>
-    <script src="/source/classes/Resource.js"></script>
-    <script src="/source/classes/Keyboard.js"></script>
+    <script src="/A3D/source/A3D.js"></script>
+    <script src="/A3D/source/classes/Game.js"></script>
+    <script src="/A3D/source/classes/Actor.js"></script>
+    <script src="/A3D/source/classes/Player.js"></script>
+    <script src="/A3D/source/classes/Scene.js"></script>
+    <script src="/A3D/source/classes/Camera.js"></script>
+    <script src="/A3D/source/classes/Controls.js"></script>
+    <script src="/A3D/source/classes/Input.js"></script>
+    <script src="/A3D/source/classes/Resource.js"></script>
+    <script src="/A3D/source/classes/Keyboard.js"></script>
 
-    <script src='Scroller.js'></script>
-    <script src='Scroller.Player.js'></script>
+    <script src='/A3D-Modules/Scroller/Scroller.js'></script>
+    <script src='/A3D-Modules/Scroller/Scroller.Player.js'></script>
 
 
     <style>
@@ -41,16 +41,16 @@
         canvasId:'renderCanvas',
         playerName : 'Actor.Player',
         collisionNames : ['Icosphere','Cube']
-        
+
     });
     var scene;//wrong it needs to one scene to handle all of the "Stuff"
-    game.setupScene('/Space/scenes/','nick.babylon', function(game){
-        
+    game.setupScene('/scroller/scenes/','nick.babylon', function(game){
+
         for(s in game.activeScenes){
            // game.activeScenes[s].b3Dscene.debugLayer.show();
             scene = game.activeScenes[s];
         }
-        
+
         game.addRunFunction({
             name : 'testCollisions',
             func : function(){
@@ -72,7 +72,7 @@
                }
             }
         });
-        
+
         game.run();
     });
 </script>
