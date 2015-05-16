@@ -7,13 +7,16 @@
     <script src="/A3D/source/A3D.js"></script>
     <script src="/A3D/source/classes/Game.js"></script>
     <script src="/A3D/source/classes/Actor.js"></script>
-    <script src="/A3D/source/classes/Player.js"></script>
+    <script src="/A3D/source/classes/Actor.Player.js"></script>
     <script src="/A3D/source/classes/Scene.js"></script>
     <script src="/A3D/source/classes/Camera.js"></script>
     <script src="/A3D/source/classes/Controls.js"></script>
     <script src="/A3D/source/classes/Input.js"></script>
     <script src="/A3D/source/classes/Resource.js"></script>
-    <script src="/A3D/source/classes/Keyboard.js"></script>
+    <script src="/A3D/source/classes/Input.Keyboard.js"></script>
+    <script src="/A3D/source/classes/Overlay.js"></script>
+    <script src="/A3D/source/classes/Object2D.js"></script>
+    <script src="/A3D/source/classes/Object2D.Image.js"></script>
 
     <script src='/A3D-Modules/Scroller/Scroller.js'></script>
     <script src='/A3D-Modules/Scroller/Scroller.Player.js'></script>
@@ -37,13 +40,18 @@
 <body>
     <div id='game'></div>
 <script>
-    var game,scene;
+    var game,scene,o,i;
     function start(){
     game = new A3D.Game.Scroller({
         containerId:'game',//Probably not needed
         playerName : 'Actor.Player',
         collisionNames : ['Icosphere','Cube']
     });
+    o = new A3D.Overlay({},game);
+    i = new A3D.Object2D.Image({
+      src : '/scroller/dog1.png'
+    });
+    o.addObject2D(i);
     game.setupScene('/scroller/scenes/','nick.babylon', function(game){
 
         for(s in game.activeScenes){
@@ -75,19 +83,11 @@
 
 
      window.addEventListener("click", function (evt) {
-        // We try to pick an object
         var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
         console.log(pick);
-        //console.log(scene.pointerY);
       });
 
-/*
-scene.b3Dscene.onPointerDown = function (evt, pickingInfo) {
-  // if the click hits the ground object, we change the impact position
-  console.log(evt);
-  console.log(pickingInfo);
-}
-*/
+
     game.run();
     });
   }
