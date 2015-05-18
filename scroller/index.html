@@ -17,6 +17,11 @@
     <script src="/A3D/source/classes/Overlay.js"></script>
     <script src="/A3D/source/classes/Object2D.js"></script>
     <script src="/A3D/source/classes/Object2D.Image.js"></script>
+    <script src="/A3D/source/classes/Action.js"></script>
+    <script src="/A3D/source/classes/Trigger.js"></script>
+    <script src="/A3D/source/classes/Trigger.Object3D.js"></script>
+    <script src="/A3D/source/classes/Trigger.Object3D.Collision.js"></script>
+
 
     <script src='/A3D-Modules/Scroller/Scroller.js'></script>
     <script src='/A3D-Modules/Scroller/Scroller.Player.js'></script>
@@ -35,12 +40,12 @@
 <body>
     <div id='game'></div>
 <script>
-    var game,scene,o,i;
+    var game,scene,o,i,loose,win;
     function start(){
     game = new A3D.Game.Scroller({
         containerId:'game',//Probably not needed
         playerName : 'Actor.Player',
-        lives: 8,
+        lives: 3,
         speed : 0.4,
         collisionNames : ['Icosphere','Cube']
     });
@@ -66,7 +71,7 @@
          //if not go here
          var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
       }
-});
+    });
 
 
       o = new A3D.Overlay({},game);
@@ -85,11 +90,49 @@
         o.addObject2D(h);
       }
 
-      game.addRunFunction({
+
+      /*This is a test to test out the triggers*/
+      /*This needs to go into a Module */
+
+      //create the action
+      game.createAction({
+        name : 'pause',
+        id : 'pause',
+        active : false,
+        func : function(){
+          console.log('I have run into the end');
+          o.addObject2D(win);
+          game.b3Dengine.stopRenderLoop();
+          o.render();
+
+        }
+      });
+
+      var te = scene.b3Dscene.getMeshByName('Trigger.End');
+      //cxreate the trigger
+      var t = new A3D.Trigger.Object3D.Collision();
+      t.addb3Dmesh(te);
+      //add the action to the trigger
+      t.addActivateAction(game.actions.pause);
+
+      //Checks the trigger each frame
+      game.createAction({
+        name : 'checkIfAtEnd',
+        id : 'checkIfAtEnd',
+        func : function(){
+          t.checkCollision(game.player.b3Dactor);
+        }
+      });
+
+      game.createAction({
         name : 'removeHeart',
         func : function(){
           if(this.player._lostLife){
             o.removeLastObject2D();
+            if(this.player.resources.lives.value <= 0){
+              o.addObject2D(loose);
+              this.b3Dengine.stopRenderLoop();
+            }
             o.render();
           }
         }.bind(game)
@@ -109,14 +152,39 @@
       });
       o.addObject2D(main);
 
+      loose = new A3D.Object2D.Image({
+        src : '/scroller/loose.png',
+        id : 'loose',
+        dWidth : o.canvas.width,
+        dHeight: o.canvas.height,
+        clickArea : {
+          x:0,
+          y:0,
+          height:o.canvas.height,
+          width:o.canvas.width
+        }
+      });
 
-
+      win = new A3D.Object2D.Image({
+        src : '/scroller/win.png',
+        id : 'win',
+        dWidth : o.canvas.width,
+        dHeight: o.canvas.height,
+        clickArea : {
+          x:0,
+          y:0,
+          height:o.canvas.height,
+          width:o.canvas.width
+        }
+      });
       o.render();
 
   //  game.run();//TODO this may be paused
     });
   }
-  document.addEventListener( "DOMContentLoaded", start, false )
+
+  //TODO add this somehow to the game
+  document.addEventListener( "DOMContentLoaded", start, false );
 
 </script>
  </body>
