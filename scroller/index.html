@@ -30,11 +30,6 @@
             margin: 0;
             overflow: hidden;
         }
-
-        #game {
-            width: 100%;
-            height: 100%;
-        }
     </style>
 </head>
 <body>
@@ -45,50 +40,80 @@
     game = new A3D.Game.Scroller({
         containerId:'game',//Probably not needed
         playerName : 'Actor.Player',
+        lives: 8,
+        speed : 0.4,
         collisionNames : ['Icosphere','Cube']
     });
-    o = new A3D.Overlay({},game);
-    i = new A3D.Object2D.Image({
-      src : '/scroller/dog1.png'
-    });
-    o.addObject2D(i);
+
     game.setupScene('/scroller/scenes/','nick.babylon', function(game){
 
         for(s in game.activeScenes){
-            game.activeScenes[s].b3Dscene.debugLayer.show();
+            //game.activeScenes[s].b3Dscene.debugLayer.show();
             scene = game.activeScenes[s];
         }
 
-        game.addRunFunction({
-            name : 'testCollisions',
-            func : function(){
-               for(e in scene.actors){
-                   if(!(scene.actors[e] instanceof A3D.Game.Scroller.Player)){
-                       if(game.player.b3Dactor.intersectsMesh(scene.actors[e].b3Dactor, true)){
-                           if(!game.player.collidedTime || (Date.now() - game.player.collidedTime) > 500){
-                               if(game.player.resources['lives'].subtract(1) > 0){
-                                   game.player.b3Dactor.position.x -= 5;//TODO don't do this make a shake function instead
-                                   game.player.collidedTime = Date.now();
-                                   console.log('inside '+scene.actors[e].name+"'s Bounding block");
-                                } else {
-                                   console.log('You Loose');
-                                   game.b3Dengine.stopRenderLoop();
-                               }
-                           }
-                       }
-                   }
-               }
-            }
-        });
-
-
+        /*
+        This is just to test clicking.. Should be a control.
+        */
      window.addEventListener("click", function (evt) {
-        var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
-        console.log(pick);
+       clickedOnUI = false;
+       if(o.overlays.mainScreen && o.overlays.mainScreen.pointInsideClickArea({x:evt.clientX, y:evt.clientY})){
+         console.log('The main screen was clicked on');
+         o.deleteObject2D('mainScreen');
+         o.render();
+         game.run();
+      } else {
+         //if not go here
+         var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
+      }
+});
+
+
+      o = new A3D.Overlay({},game);
+
+      var heartObj = {
+        src : '/scroller/heart.png',
+        dX:0,
+        dY:10,
+        dWidth:30,
+        dHeight:30
+      };
+
+      for(var i = 0; i < game.player.resources.lives.value; i++){
+        heartObj.dX += 30;
+        var h = new A3D.Object2D.Image(heartObj);
+        o.addObject2D(h);
+      }
+
+      game.addRunFunction({
+        name : 'removeHeart',
+        func : function(){
+          if(this.player._lostLife){
+            o.removeLastObject2D();
+            o.render();
+          }
+        }.bind(game)
       });
 
+      var main = new A3D.Object2D.Image({
+        src:'/scroller/turtle2.png',
+        id : 'mainScreen',
+        dWidth : o.canvas.width,
+        dHeight: o.canvas.height,
+        clickArea : {
+          x:0,
+          y:0,
+          height:o.canvas.height,
+          width:o.canvas.width
+        }
+      });
+      o.addObject2D(main);
 
-    game.run();
+
+
+      o.render();
+
+  //  game.run();//TODO this may be paused
     });
   }
   document.addEventListener( "DOMContentLoaded", start, false )
