@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Space test</title>
+    <title>Adventure Test</title>
 
     <script src="/libs/babylon.2.1-beta.debug.js"></script>
     <script src="/A3D/source/A3D.js"></script>
@@ -22,11 +22,7 @@
     <script src="/A3D/source/classes/Trigger.Object3D.js"></script>
     <script src="/A3D/source/classes/Trigger.Object3D.Collision.js"></script>
 
-
-    <script src='/A3D-Modules/Scroller/Scroller.js'></script>
-    <script src='/A3D-Modules/Scroller/Scroller.Player.js'></script>
-
-
+    <script src='/A3D-Modules/Adventure/Adventure.js'></script>
     <style>
         html, body {
             width: 100%;
@@ -40,54 +36,24 @@
 <body>
     <div id='game'></div>
 <script>
-    var game,scene,o,i,loose,win;
+    var game,scene,player,skeleton;
     function start(){
-    game = new A3D.Game.Scroller({
-        containerId:'game',//Probably not needed
-        playerName : 'Actor.Rocket',
-        lives: 3,
-        speed : 0.8,
-        collisionNames : ['Icosphere','Cube']
+    game = new A3D.Game.Adventure({
+        containerId:'game'
     });
 
-    game.setupScene('/scroller/scenes/','aRocket.babylon', function(game){
-
-        for(s in game.activeScenes){
-            //game.activeScenes[s].b3Dscene.debugLayer.show();
-            scene = game.activeScenes[s];
-        }
-
-
-
-
-      o = new A3D.Overlay({},game);
-
-      var heartObj = {
-        src : '/scroller/heart.png',
-        dX:0,
-        dY:10,
-        dWidth:30,
-        dHeight:30
-      };
-
-      for(var i = 0; i < game.player.resources.lives.value; i++){
-        heartObj.dX += 30;
-        var h = new A3D.Object2D.Image(heartObj);
-        o.addObject2D(h);
+    game.setupScene('/adventure/scenes/','chris.babylon', function(game){
+      for(s in game.activeScenes){
+          //game.activeScenes[s].b3Dscene.debugLayer.show();
+          scene = game.activeScenes[s];
       }
-
-
-      /*This is a test to test out the triggers*/
-      /*This needs to go into a Module */
-
-
-
-
-
-
-      o.render();
-
-    game.run();//TODO this may be paused
+      scene.b3Dscene.debugLayer.show();
+      skeleton = scene.b3Dscene.skeletons[0];
+      game.run();//TODO this may be paused
+      //There is only one animation track imported. What this means is that the animation.
+      //So each animation will be a % to %.
+      scene.b3Dscene.beginAnimation(skeleton,0,30,true);
+      player = scene.b3Dscene.getMeshByName('Chris');
     });
   }
 
