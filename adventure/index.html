@@ -47,15 +47,44 @@
           //game.activeScenes[s].b3Dscene.debugLayer.show();
           scene = game.activeScenes[s];
       }
-      scene.b3Dscene.debugLayer.show();
+    //    scene.b3Dscene.debugLayer.show();
       skeleton = scene.b3Dscene.skeletons[0];
       game.run();//TODO this may be paused
       //There is only one animation track imported. What this means is that the animation.
       //So each animation will be a % to %.
       scene.b3Dscene.beginAnimation(skeleton,0,30,true);
       player = scene.b3Dscene.getMeshByName('Chris');
+
+
+      window.addEventListener("click", function (evt) {
+        var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
+        player.lookAt(pick.pickedPoint); //may need to take out the y
+
+        //start
+      //  player.position.x = pick.pickedPoint.x;
+      //  player.position.z = pick.pickedPoint.z;
+      //  console.log(pick);
+
+        player.dir = new BABYLON.Vector3(0, 0, 1);
+        //player.translate(new BABYLON.Vector3(0, 0, 1),-0.2,0);
+        game.actions.move.active = true;
+        //doSomething(pick);
+     });
+
+     game.createAction({
+       name : 'move',
+       id : 'move',
+       active : false,
+       func : function(){
+         this.translate(this.dir,-0.03,0);
+       }.bind(player)
+     });
+
     });
+
+
   }
+
 
   //TODO add this somehow to the game
   document.addEventListener( "DOMContentLoaded", start, false );
