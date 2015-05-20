@@ -36,67 +36,122 @@
 <body>
     <div id='game'></div>
 <script>
-    var game,scene,player,skeleton,target,tSkeletons;
+    var game,scene,player,skeleton,target,tSkeletons,intTarget;
     function start(){
     game = new A3D.Game.Adventure({
         containerId:'game'
     });
 
-    game.setupScene('/adventure/scenes/','chris.babylon', function(game){
+    game.setupScene('/adventure/scenes/','testScene.babylon', function(game){
       for(s in game.activeScenes){
           //game.activeScenes[s].b3Dscene.debugLayer.show();
           scene = game.activeScenes[s];
       }
+
     //    scene.b3Dscene.debugLayer.show();
-      skeleton = scene.b3Dscene.skeletons[0];
-      game.run();//TODO this may be paused
+    //  skeleton = scene.b3Dscene.skeletons[0];
+      game.run();
       //There is only one animation track imported. What this means is that the animation.
       //So each animation will be a % to %.
 
-      player = scene.b3Dscene.getMeshByName('Chris');
+    //  player = scene.b3Dscene.getMeshByName('Chris');
 
-      BABYLON.SceneLoader.ImportMesh("", "/adventure/scenes/", "gototarget.babylon", scene.b3Dscene, function (newMeshes, particleSystems, skeletons)
-{
-  target = newMeshes[0];
-  tSkeleton = skeletons[0];
-});
+      BABYLON.SceneLoader.ImportMesh("", "/adventure/scenes/", "chris.babylon", scene.b3Dscene, function (newMeshes, particleSystems, skeletons){
+        player = newMeshes[0];
+        skeleton = skeletons[0];
+        scene.b3Dscene.beginAnimation(skeleton, 80,100,true);
+
+        game.createAction({
+          name : 'move',
+          id : 'move',
+          active : false,
+          func : function(){
+            //-0.026 was good for walking
+            if(BABYLON.Vector3.Distance(this.position,intTarget.position) < 2.5 && this.running){
+               scene.b3Dscene.stopAnimation(skeleton);
+               //walk
+               this.running = false;
+               scene.b3Dscene.beginAnimation(skeleton, 10,40, true);
+            }
+
+           if(this.running){
+             this.translate(this.dir,-0.075,0);
+           } else {
+             this.translate(this.dir,-0.026,0);
+           }
+
+           if(this.intersectsMesh(intTarget, true)){
+              game.actions.move.active = false;
+              target.position.x = 5000;
+              intTarget.position.x = 5000;
+              scene.b3Dscene.stopAnimation(tSkeleton);
+              scene.b3Dscene.stopAnimation(skeleton);
+              scene.b3Dscene.beginAnimation(skeleton,40,45,false,1,function(){
+                scene.b3Dscene.beginAnimation(skeleton, 80,100,true);
+              });
+            }
+
+            for(var i = 0; i < scene.b3Dscene.meshes.length; i++){
+              if(['Chris','target','InnerTarget'].indexOf(scene.b3Dscene.meshes[i].name) < 0){
+                if(this.intersectsMesh(scene.b3Dscene.meshes[i], true)){
+                  console.log('Im Colliding with '+scene.b3Dscene.meshes[i].name);
+
+                  game.actions.move.active = false;
+                  scene.b3Dscene.stopAnimation(skeleton);
+
+                  this.translate(new BABYLON.Vector3(0,0,-1),-0.5,0);
+
+                  scene.b3Dscene.beginAnimation(skeleton,40,45,false,1,function(){
+                    scene.b3Dscene.beginAnimation(skeleton, 80,100,true);
+                  });
+                }
+              }
+            }
+          }.bind(player)
+        });
+      });
+
+      BABYLON.SceneLoader.ImportMesh("", "/adventure/scenes/", "gototarget.babylon", scene.b3Dscene, function (newMeshes, particleSystems, skeletons){
+        target = newMeshes[1];
+        intTarget = newMeshes[0];
+        intTarget.visibility = 0;
+        tSkeleton = skeletons[0];
+      });
 
       window.addEventListener("click", function (evt) {
         var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
-        player.lookAt(pick.pickedPoint); //may need to take out the y
+        if(pick.pickedMesh.name == 'Plane' ){
+          console.log(pick);
+          intTarget.position.x = pick.pickedPoint.x;
+          intTarget.position.z = pick.pickedPoint.z;
 
-        //start
-        target.position.x = pick.pickedPoint.x;
-        target.position.z = pick.pickedPoint.z;
-        scene.b3Dscene.beginAnimation(tSkeleton,0,100,true);
-      //  console.log(pick);
+          player.lookAt(new BABYLON.Vector3(pick.pickedPoint.x,0,pick.pickedPoint.z)); //may need to take out the y
 
-        player.dir = new BABYLON.Vector3(0, 0, 1);
-        //player.translate(new BABYLON.Vector3(0, 0, 1),-0.2,0);
-        game.actions.move.active = true;
-        scene.b3Dscene.beginAnimation(skeleton,0,30,true);
-        //doSomething(pick);
+          //start
+          target.position.x = pick.pickedPoint.x;
+          target.position.z = pick.pickedPoint.z;
+
+          scene.b3Dscene.beginAnimation(tSkeleton,0,100,true);
+          //  console.log(pick);
+
+          player.dir = new BABYLON.Vector3(0, 0, 1);
+          //player.translate(new BABYLON.Vector3(0, 0, 1),-0.2,0);
+          game.actions.move.active = true;
+          scene.b3Dscene.stopAnimation(skeleton);
+          if(BABYLON.Vector3.Distance(player.position,intTarget.position) > 2.5){
+            //walk
+            player.running = true;
+            scene.b3Dscene.beginAnimation(skeleton,50,70,true);
+          } else {
+            player.running = false;
+            scene.b3Dscene.beginAnimation(skeleton, 10,40, true);
+          }
+        }
      });
 
-     game.createAction({
-       name : 'move',
-       id : 'move',
-       active : false,
-       func : function(){
-         this.translate(this.dir,-0.026,0);
-         //scene.b3Dscene.stopAnimation(skeleton,0,30,true);
-         if(this.intersectsMesh(target, true)){
-           game.actions.move.active = false;
-           target.position.x = 5000;
-           scene.b3Dscene.stopAnimation(tSkeleton,0,100,true);
-           scene.b3Dscene.stopAnimation(skeleton,0,100,true);
-         }
-       }.bind(player)
-     });
+
 
     });
-
-
   }
 
 
