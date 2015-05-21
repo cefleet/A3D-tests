@@ -47,6 +47,8 @@
           //game.activeScenes[s].b3Dscene.debugLayer.show();
           scene = game.activeScenes[s];
       }
+      game.clickables = [scene.b3Dscene.meshes[0],scene.b3Dscene.meshes[1]];
+
 
     //    scene.b3Dscene.debugLayer.show();
     //  skeleton = scene.b3Dscene.skeletons[0];
@@ -67,7 +69,7 @@
           active : false,
           func : function(){
             //-0.026 was good for walking
-            if(BABYLON.Vector3.Distance(this.position,intTarget.position) < 2.5 && this.running){
+            if(BABYLON.Vector3.Distance(this.position,intTarget.position) < 3 && this.running){
                scene.b3Dscene.stopAnimation(skeleton);
                //walk
                this.running = false;
@@ -118,6 +120,27 @@
         tSkeleton = skeletons[0];
       });
 
+      window.addEventListener("mousedown", function (evt) {
+        var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
+        for(var i = 0; i < game.clickables.length; i++){
+          if(Object.is(game.clickables[i],pick.pickedMesh)){
+            console.log('You have clicked on one of the boxes');
+            pick.pickedMesh.visibility = 0;
+          }
+        }
+      });
+
+      window.addEventListener("mouseup", function (evt) {
+        var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
+        for(var i = 0; i < game.clickables.length; i++){
+          if(Object.is(game.clickables[i],pick.pickedMesh)){
+            console.log('You have clicked on one of the boxes');
+            pick.pickedMesh.visibility = 1;
+          }
+        }
+      });
+
+
       window.addEventListener("click", function (evt) {
         var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
         if(pick.pickedMesh.name == 'Plane' ){
@@ -146,11 +169,11 @@
             player.running = false;
             scene.b3Dscene.beginAnimation(skeleton, 10,40, true);
           }
+        } else {
+          //This is just making an action type thing for clicking on something
+
         }
      });
-
-
-
     });
   }
 
