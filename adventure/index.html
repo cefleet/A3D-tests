@@ -14,6 +14,7 @@
     <script src="/A3D/source/classes/Input.js"></script>
     <script src="/A3D/source/classes/Resource.js"></script>
     <script src="/A3D/source/classes/Input.Keyboard.js"></script>
+    <script src="/A3D/source/classes/Input.Mouse.js"></script>
     <script src="/A3D/source/classes/Overlay.js"></script>
     <script src="/A3D/source/classes/Object2D.js"></script>
     <script src="/A3D/source/classes/Object2D.Image.js"></script>
@@ -39,26 +40,21 @@
     var game,scene,player,skeleton,target,tSkeletons,intTarget;
     function start(){
     game = new A3D.Game.Adventure({
-        containerId:'game'
+      containerId:'game'
     });
 
     game.setupScene('/adventure/scenes/','testScene.babylon', function(game){
+
       for(s in game.activeScenes){
-          //game.activeScenes[s].b3Dscene.debugLayer.show();
-          scene = game.activeScenes[s];
+        scene = game.activeScenes[s];
       }
+
       game.clickables = [scene.b3Dscene.meshes[0],scene.b3Dscene.meshes[1]];
 
-
-    //    scene.b3Dscene.debugLayer.show();
-    //  skeleton = scene.b3Dscene.skeletons[0];
       game.run();
-      //There is only one animation track imported. What this means is that the animation.
-      //So each animation will be a % to %.
-
-    //  player = scene.b3Dscene.getMeshByName('Chris');
 
       BABYLON.SceneLoader.ImportMesh("", "/adventure/scenes/", "chris.babylon", scene.b3Dscene, function (newMeshes, particleSystems, skeletons){
+
         player = newMeshes[0];
         skeleton = skeletons[0];
         scene.b3Dscene.beginAnimation(skeleton, 80,100,true);
@@ -68,7 +64,6 @@
           id : 'move',
           active : false,
           func : function(){
-            //-0.026 was good for walking
             if(BABYLON.Vector3.Distance(this.position,intTarget.position) < 3 && this.running){
                scene.b3Dscene.stopAnimation(skeleton);
                //walk
@@ -111,6 +106,23 @@
             }
           }.bind(player)
         });
+
+        var c = new A3D.Controls({input : game.inputs.mouse});
+
+        c.addfuncToMap('leftmouse',function(t){
+          var mp = c.input.inputMap['leftmouse'].mouseLocation;
+          console.log(mp);
+          var pick = scene.b3Dscene.pick(mp.x, mp.y);
+          console.log(pick.pickedMesh.name);
+          pick.pickedMesh.overlayAlpha = 0.2;
+          pick.pickedMesh.overlayColor = new BABYLON.Color3(0.8,0.8,0.8);
+          pick.pickedMesh.renderOverlay = true;
+
+        });
+
+        c.input.addToInputMap('leftmouse');
+        c.addControlsToGame(game);
+
       });
 
       BABYLON.SceneLoader.ImportMesh("", "/adventure/scenes/", "gototarget.babylon", scene.b3Dscene, function (newMeshes, particleSystems, skeletons){
@@ -120,31 +132,44 @@
         tSkeleton = skeletons[0];
       });
 
-      window.addEventListener("mousedown", function (evt) {
+/*
+
+      document.onmousedown = function (evt) {
         var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
         for(var i = 0; i < game.clickables.length; i++){
           if(Object.is(game.clickables[i],pick.pickedMesh)){
-            console.log('You have clicked on one of the boxes');
-            pick.pickedMesh.visibility = 0;
+
+
+            //This is highlighting
+          //  pick.pickedMesh.outlineColor = new BABYLON.Color4(0.1,0.3,0.8,0.04);
+          //  pick.pickedMesh.outlineWidth = 0.2;
+          //  pick.pickedMesh.renderOutline = true;
+
+          pick.pickedMesh.overlayAlpha = 0.2;
+          pick.pickedMesh.overlayColor = new BABYLON.Color3(0.8,0.8,0.8);
+           pick.pickedMesh.renderOverlay = true;
           }
         }
-      });
-
+      };
+*/
+/*
       window.addEventListener("mouseup", function (evt) {
         var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
         for(var i = 0; i < game.clickables.length; i++){
           if(Object.is(game.clickables[i],pick.pickedMesh)){
-            console.log('You have clicked on one of the boxes');
-            pick.pickedMesh.visibility = 1;
+
+            pick.pickedMesh.renderOutline = false;
+            pick.pickedMesh.renderOverlay = false;
           }
         }
       });
+*/
 
-
+//This is the move character item
+/*
       window.addEventListener("click", function (evt) {
         var pick = scene.b3Dscene.pick(evt.clientX, evt.clientY);
         if(pick.pickedMesh.name == 'Plane' ){
-          console.log(pick);
           intTarget.position.x = pick.pickedPoint.x;
           intTarget.position.z = pick.pickedPoint.z;
 
@@ -155,10 +180,8 @@
           target.position.z = pick.pickedPoint.z;
 
           scene.b3Dscene.beginAnimation(tSkeleton,0,100,true);
-          //  console.log(pick);
 
           player.dir = new BABYLON.Vector3(0, 0, 1);
-          //player.translate(new BABYLON.Vector3(0, 0, 1),-0.2,0);
           game.actions.move.active = true;
           scene.b3Dscene.stopAnimation(skeleton);
           if(BABYLON.Vector3.Distance(player.position,intTarget.position) > 2.5){
@@ -169,12 +192,11 @@
             player.running = false;
             scene.b3Dscene.beginAnimation(skeleton, 10,40, true);
           }
-        } else {
-          //This is just making an action type thing for clicking on something
-
         }
      });
+     */
     });
+
   }
 
 
