@@ -60,7 +60,7 @@
       player.addToScene(scene);
 
       //TODO the scene crater should make this the ground
-      ground.addMesh(scene.b3Dscene.meshes[0]);
+      ground.addMesh(scene.b3Dscene.getMeshByName('Ground'));
       ground.addControls(game);
 
       game.run();
@@ -88,11 +88,11 @@
 
         var moveP = function(){
           player.turnToActor(target);
-          if(BABYLON.Vector3.Distance(player.position,target.position) <= 3 && player.running){
+          if(BABYLON.Vector3.Distance(player.position,target.position) <= 2 && player.running){
             player.stopAnimation();
             player.runAnimation('walking');
             player.running = false;
-          } else if(BABYLON.Vector3.Distance(player.position,target.position) >= 3 && !player.running){
+          } else if(BABYLON.Vector3.Distance(player.position,target.position) >= 2 && !player.running){
             player.stopAnimation();
             player.runAnimation('running');
             player.running = true;
@@ -197,7 +197,7 @@
       scene.importMeshFromFile("/adventure/scenes/", "objects.babylon", "", oNext);
     };
 
-  game.loadScene('/adventure/scenes/','scene.babylon', next);
+  game.loadScene('/adventure/scenes/','first_city.babylon', next);
   }
   //TODO add this somehow to the game
   document.addEventListener( "DOMContentLoaded", start, false );
