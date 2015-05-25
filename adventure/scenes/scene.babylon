@@ -1,0 +1,14 @@
+{"autoClear":true,"clearColor":[0,0,0],"ambientColor":[0,0,0],"gravity":[0,-9.81,0],
+"materials":[{"name":"scene.Material.001","id":"scene.Material.001","ambient":[0.0325,0.8,0.016],"diffuse":[0.0325,0.8,0.016],"specular":[0,0,0],"emissive":[0,0,0],"specularPower":50,"alpha":1,"backFaceCulling":true}],
+"multiMaterials":[],
+"skeletons":[],
+"meshes":[{"name":"ground","id":"ground","materialId":"scene.Material.001","billboardMode":0,"position":[0,0,0],"rotation":[0,0,0],"scaling":[12.2657,12.2657,12.2657],"isVisible":true,"isEnabled":true,"useFlatShading":true,"checkCollisions":false,"receiveShadows":true,"meshType":"ground"
+,"positions":[1,0,-1,1,0,1,-1,0,1,-1,0,-1]
+,"normals":[0,1,0,0,1,0,0,1,0,0,1,0]
+,"indices":[0,1,2,3,0,2]
+,"subMeshes":[{"materialIndex":0,"verticesStart":0,"verticesCount":4,"indexStart":0,"indexCount":6}]
+,"instances":[]}
+],
+"cameras":[{"name":"Camera.Main","id":"Camera.Main","position":[0.0035,20.9924,-9.9233],"rotation":[1.1264,0.0013,0.0127],"fov":0.8576,"minZ":0.1,"maxZ":100,"speed":1,"inertia":0.9,"checkCollisions":false,"applyGravity":false,"ellipsoid":[0.2,0.9,0.2],"type":"FreeCamera"}],"activeCamera":"Camera.Main",
+"lights":[{"name":"Lamp","id":"Lamp","type":3,"direction":[-0.0036,1,0.0007],"groundColor":[0,0,0],"intensity":1,"diffuse":[1,1,1],"specular":[1,1,1]}],
+"shadowGenerators":[]}

@@ -23,8 +23,11 @@
     <script src="/A3D/source/classes/Trigger.Object3D.js"></script>
     <script src="/A3D/source/classes/Trigger.Object3D.Collision.js"></script>
     <script src="/A3D/source/classes/SkeletonAnimations.js"></script>
+    <script src="/A3D/source/classes/Obstacle.js"></script>
 
     <script src='/A3D-Modules/Adventure/Adventure.js'></script>
+    <script src='/A3D-Modules/Adventure/Adventure.Ground.js'></script>
+
     <style>
         html, body {
             width: 100%;
@@ -38,117 +41,101 @@
 <body>
     <div id='game'></div>
 <script>
-    var game,scene,player,target,intTarget;
+    var game,scene,player,target,intTarget,next,ground,ob;
     function start(){
     game = new A3D.Game.Adventure({
       containerId:'game'
     });
 
-    var next = function(game){
+    player = new A3D.Actor.Player();
+    ground = new A3D.Game.Adventure.Ground();
+
+    game.inputs.mouse.addToInputMap('leftmouse');
+
+    next = function(game){
       for(s in game.activeScenes){
         scene = game.activeScenes[s];
       }
 
-      game.clickables = [scene.b3Dscene.meshes[0],scene.b3Dscene.meshes[1]];
+      player.addToScene(scene);
+
+      //TODO the scene crater should make this the ground
+      ground.addMesh(scene.b3Dscene.meshes[0]);
+      ground.addControls(game);
 
       game.run();
 
+      //TODO work on this being different
       var iNext = function (importObject){
-        player = importObject.meshes[0];
 
-        //TODO give
-        player.Animation = new A3D.SkeletonAnimations({
-          skeleton : importObject.skeletons[0],
-          scene : scene,
-          frames : 100
-        });
+        player.addMeshToActor(importObject.meshes[0]);
+        player.addSkeleton(importObject.skeletons[0],100);
 
-        player.Animation.addAnimation('idle',80,100,true);
-        player.Animation.addAnimation('running',50,70,true);
-        player.Animation.addAnimation('walking',10,40,true);
-        player.Animation.addAnimation('startRun',40,45,false,1,function(){
-          player.Animation.run('running');
-        });
+        player.addAnimation('idle',80,100);
+        player.addAnimation('running',50,70);
+        player.addAnimation('walking',10,40);
 
-        player.Animation.run('idle');
-
-        var l = function () {
-          var mp = player.Controls.input.inputMap['leftmouse'].mouseLocation;
-          var pick = scene.b3Dscene.pick(mp.x, mp.y);
-          if(pick.pickedMesh.name == 'Plane' ){
-            intTarget.position.x = pick.pickedPoint.x;
-            intTarget.position.z = pick.pickedPoint.z;
-
-            target.position.x = intTarget.position.x;
-            target.position.z = intTarget.position.z;
-
-            player.lookAt(new BABYLON.Vector3(intTarget.position.x,0,intTarget.position.z)); //may need to take out the y
-
-            target.Animation.run('rotate');
-
-            player.dir = new BABYLON.Vector3(0, 0, 1);
-            game.actions.move.active = true;
-            player.Animation.stop();
-            if(BABYLON.Vector3.Distance(player.position,intTarget.position) > 2.5){
-              //walk
-              player.running = true;
-              player.Animation.run('running');
-            } else {
-              player.running = false;
-              player.Animation.run('walk');
-            }
+        player.addAnimation('startRun',40,45,{
+          loop:false,
+          ratio: 1,
+          next :function(){
+            player.runAnimation('running');
           }
-       };
+        });
 
-       player.Controls = new A3D.Controls({input : game.inputs.mouse});
-       player.Controls.addfuncToMap('leftmouse',l);
-       player.Controls.input.addToInputMap('leftmouse');
-       player.Controls.addControlsToGame(game);
+        player.runAnimation('idle');
+
+
+        var moveP = function(){
+          player.turnToActor(target);
+          if(BABYLON.Vector3.Distance(player.position,target.position) <= 3 && player.running){
+            player.stopAnimation();
+            player.runAnimation('walking');
+            player.running = false;
+          } else if(BABYLON.Vector3.Distance(player.position,target.position) >= 3 && !player.running){
+            player.stopAnimation();
+            player.runAnimation('running');
+            player.running = true;
+          }
+
+         if(player.running){
+            player.moveOnLocalAxis('z',-0.075);
+         } else {
+            player.moveOnLocalAxis('z',-0.026);
+         }
+
+         if(player.intersectsWithObject(target)){
+           //could be a player stop
+           //and used in other locations
+           ground.deactivateTarget();
+           player.stopAnimation();
+           player.runAnimation('idle');
+           player.running = false;
+         }
+
+         for(var i = 0; i < scene.obstacles.length; i++){
+           if(player.intersectsWithObject(scene.obstacles[i])){
+             ground.deactivateTarget();
+             player.stopAnimation();
+             player.runAnimation('idle');
+             player.running = false;
+             //TODO needs a 'backup' function
+           }
+         }
+      };
 
         game.createAction({
-          name : 'move',
-          id : 'move',
-          active : false,
+          name : 'checkTarget',
+          id : 'checkTarget',
+          active : true,
           func : function(){
-            if(BABYLON.Vector3.Distance(this.position,intTarget.position) < 3 && this.running){
-              player.Animation.stop();
-               //walk
-               this.running = false;
-               player.Animation.run('walking');
+            if(target.isActive){
+              moveP();
             }
-
-           if(this.running){
-             this.translate(this.dir,-0.075,0);
-           } else {
-             this.translate(this.dir,-0.026,0);
-           }
-
-           if(this.intersectsMesh(intTarget, true)){
-              game.actions.move.active = false;
-              target.position.x = 5000;
-              intTarget.position.x = 5000;
-              target.Animation.stop();
-              player.Animation.stop();
-              player.Animation.run('idle');
-            }
-
-            for(var i = 0; i < scene.b3Dscene.meshes.length; i++){
-              if(['Chris','target','InnerTarget'].indexOf(scene.b3Dscene.meshes[i].name) < 0){
-                if(this.intersectsMesh(scene.b3Dscene.meshes[i], true)){
-                  console.log('Im Colliding with '+scene.b3Dscene.meshes[i].name);
-
-                  game.actions.move.active = false;
-                  player.Animation.stop();
-
-                  this.translate(new BABYLON.Vector3(0,0,-1),-0.5,0);
-                  player.Animation.run('idle');
-
-                }
-              }
-            }
-          }.bind(player)
+          }
         });
 
+/*
         var f = {
           func : function(){
             var mp = c.input.inputMap['leftmouse'].mouseLocation;
@@ -166,30 +153,51 @@
 
         var c = new A3D.Controls({input : game.inputs.mouse});
 
-        c.addfuncToMap('leftmouse',f.func,null,f.afterFunc);
-
-        c.input.addToInputMap('leftmouse');
+        c.addfuncToMap('leftmouse','highlight',f.func,null,f.afterFunc);
         c.addControlsToGame(game);
+*/
       };
 
       var lNext = function(nm){
-        target = nm.meshes[1];
-        target.Animation = new A3D.SkeletonAnimations({
-          skeleton : nm.skeletons[0],
-          scene : scene,
-          frames : 100
+        nm.meshes[0].visibility = 0;//this should be done in the blender
+        target = new A3D.Actor({
+          b3Dmeshes : [
+            nm.meshes[1],
+            nm.meshes[0]
+          ]
         });
+        target.addToScene(scene);
+        target.addSkeleton(nm.skeletons[0],100);
+        target.addAnimation('active',0,100);
+        ground.addTarget(target);
+      };
 
-        target.Animation.addAnimation('rotate',0,100,true);
-        intTarget = nm.meshes[0];
-        intTarget.visibility = 0;
+      var oNext = function(io){
+        ob = new A3D.Obstacle();
+        ob.addToScene(scene);
+        ob.setB3Dmeshes(io.meshes);
+        ob.setLocation(new BABYLON.Vector3(3,.6,6));
+        scene.addToObstacles(ob);
+
+        var t = ob.copy();
+        t.setLocation(new BABYLON.Vector3(5,.6,1));
+        scene.addToObstacles(t);
+
+        var th = ob.copy();
+        th.setLocation(new BABYLON.Vector3(-5,.6,1));
+        scene.addToObstacles(th);
+
+        var gh = ob.copy();
+        gh.setLocation(new BABYLON.Vector3(2,.6,-6));
+        scene.addToObstacles(gh);
       };
 
       scene.importMeshFromFile("/adventure/scenes/", "chris.babylon", "Chris", iNext);
       scene.importMeshFromFile("/adventure/scenes/", "gototarget.babylon", "", lNext);
-
+      scene.importMeshFromFile("/adventure/scenes/", "objects.babylon", "", oNext);
     };
-    game.loadScene('/adventure/scenes/','testScene.babylon', next);
+
+  game.loadScene('/adventure/scenes/','scene.babylon', next);
   }
   //TODO add this somehow to the game
   document.addEventListener( "DOMContentLoaded", start, false );

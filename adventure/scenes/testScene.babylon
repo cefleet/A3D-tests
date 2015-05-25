@@ -2,19 +2,19 @@
 "materials":[{"name":"testScene.Material.001","id":"testScene.Material.001","ambient":[0.0129,0.448,0.0038],"diffuse":[0.0103,0.3584,0.003],"specular":[0.0003,0.0047,0.0005],"emissive":[0,0,0],"specularPower":50,"alpha":1,"backFaceCulling":true, "diffuseTexture":{"name":"grass3.png","level":1,"hasAlpha":1,"coordinatesMode":0,"uOffset":0,"vOffset":0,"uScale":1,"vScale":1,"uAng":0,"vAng":0,"wAng":0,"wrapU":1,"wrapV":1,"coordinatesIndex":0}},{"name":"testScene.Material.002","id":"testScene.Material.002","ambient":[0.0743,0.1136,0.8],"diffuse":[0.0594,0.0909,0.64],"specular":[0.5,0.5,0.5],"emissive":[0,0,0],"specularPower":50,"alpha":1,"backFaceCulling":true}],
 "multiMaterials":[],
 "skeletons":[],
-"meshes":[{"name":"Cube.001","id":"Cube.001","materialId":"testScene.Material.002","billboardMode":0,"position":[6.1226,1.3598,8.3883],"rotation":[0,0,0],"scaling":[1,1.3446,1],"isVisible":true,"isEnabled":true,"useFlatShading":false,"checkCollisions":false,"receiveShadows":false
+"meshes":[{"name":"Cube.001","id":"Cube.001","materialId":"testScene.Material.002","billboardMode":0,"position":[6.1226,1.3598,8.3883],"rotation":[0,0,0],"scaling":[1,1.3446,1],"isVisible":true,"isEnabled":true,"useFlatShading":false,"checkCollisions":true,"receiveShadows":false
 ,"positions":[-1,1,1,-1,-1,1,-1,-1,-1,1,1,1,1,-1,1,1,1,-1,1,-1,-1,-1,1,-1]
 ,"normals":[-0.5773,0.5773,0.5773,-0.5773,-0.5773,0.5773,-0.5773,-0.5773,-0.5773,0.5773,0.5773,0.5773,0.5773,-0.5773,0.5773,0.5773,0.5773,-0.5773,0.5773,-0.5773,-0.5773,-0.5773,0.5773,-0.5773]
 ,"indices":[0,1,2,3,4,1,5,6,4,7,2,6,1,4,6,3,0,7,7,0,2,0,3,1,3,5,4,5,7,6,2,1,6,5,3,7]
 ,"subMeshes":[{"materialIndex":0,"verticesStart":0,"verticesCount":8,"indexStart":0,"indexCount":36}]
 ,"instances":[]}
-,{"name":"Cube","id":"Cube","materialId":"testScene.Material.002","billboardMode":0,"position":[-2.9619,1.3598,-6.0303],"rotation":[0,0,0],"scaling":[1,1.3446,1],"isVisible":true,"isEnabled":true,"useFlatShading":false,"checkCollisions":false,"receiveShadows":false
+,{"name":"Cube","id":"Cube","materialId":"testScene.Material.002","billboardMode":0,"position":[-2.9619,1.3598,-6.0303],"rotation":[0,0,0],"scaling":[1,1.3446,1],"isVisible":true,"isEnabled":true,"useFlatShading":false,"checkCollisions":true,"receiveShadows":false
 ,"positions":[-1,1,1,-1,-1,1,-1,-1,-1,1,1,1,1,-1,1,1,1,-1,1,-1,-1,-1,1,-1]
 ,"normals":[-0.5773,0.5773,0.5773,-0.5773,-0.5773,0.5773,-0.5773,-0.5773,-0.5773,0.5773,0.5773,0.5773,0.5773,-0.5773,0.5773,0.5773,0.5773,-0.5773,0.5773,-0.5773,-0.5773,-0.5773,0.5773,-0.5773]
 ,"indices":[0,1,2,3,4,1,5,6,4,7,2,6,1,4,6,3,0,7,7,0,2,0,3,1,3,5,4,5,7,6,2,1,6,5,3,7]
 ,"subMeshes":[{"materialIndex":0,"verticesStart":0,"verticesCount":8,"indexStart":0,"indexCount":36}]
 ,"instances":[]}
-,{"name":"Plane","id":"Plane","materialId":"testScene.Material.001","billboardMode":0,"position":[0,0,0],"rotation":[0,0,0],"scaling":[13.7757,13.7757,13.7757],"isVisible":true,"isEnabled":true,"useFlatShading":false,"checkCollisions":false,"receiveShadows":false
+,{"name":"Plane","id":"Plane","materialId":"testScene.Material.001","billboardMode":0,"position":[0,0,0],"rotation":[0,0,0],"scaling":[13.7757,13.7757,13.7757],"isVisible":true,"isEnabled":true,"useFlatShading":false,"checkCollisions":false,"receiveShadows":false,"hasTrigger":true
 ,"positions":[1,0,-1,1,0,1,-1,0,1,-1,0,-1]
 ,"normals":[0,1,0,0,1,0,0,1,0,0,1,0]
 ,"uvs":[11.6491,-10.6491,11.6491,11.6491,-10.6491,11.6491,-10.6491,-10.6491]
