@@ -60,7 +60,7 @@
       player.addToScene(scene);
 
       //TODO the scene crater should make this the ground
-      ground.addMesh(scene.b3Dscene.getMeshByName('Ground'));
+      A3D.addMeshTo(scene.b3Dscene.getMeshByName('Ground'),ground);
       ground.addControls(game);
 
       game.run();
@@ -68,7 +68,7 @@
       //TODO work on this being different
       var iNext = function (importObject){
 
-        player.addMeshToActor(importObject.meshes[0]);
+        A3D.addMeshTo(importObject.meshes[0],player);
         player.addSkeleton(importObject.skeletons[0],100);
 
         player.addAnimation('idle',80,100);
@@ -175,7 +175,7 @@
       var oNext = function(io){
         ob = new A3D.Obstacle();
         ob.addToScene(scene);
-        ob.setB3Dmeshes(io.meshes);
+        A3D.setB3Dmeshes(io.meshes,ob);
         ob.setLocation(new BABYLON.Vector3(3,.6,6));
         scene.addToObstacles(ob);
 

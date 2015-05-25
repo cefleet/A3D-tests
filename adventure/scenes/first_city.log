@@ -87,8 +87,6 @@
 		num uvs2           :  0
 		num colors         :  0
 		num indices        :  246
-	WARNING: The following armature not visible in scene thus ignored: Armature
-	WARNING: The following lamp not visible in scene thus ignored: Hemi.001
 	processing begun of light (HEMI):  Hemi
 	WARNING: Only directional (sun) and spot types of lamp are valid for shadows thus ignored: Hemi
 ========= Writing of scene file started =========
