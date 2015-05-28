@@ -1,5 +1,5 @@
 Adventure player class -
-  player move function - including collisions and the sort (the running and walking will be interestign to implement)
+  player move function - including collisions and the sort (the running and walking will be interesting to implement)
   player stop function
   player create function
   player speed options // some how have a speed,animation,key thing
@@ -7,7 +7,7 @@ Adventure player class -
 
 Using the imported objects correctly
 
-Highlighting of meshes on click (possible done via anventure scene)
+Highlighting of meshes on click (possible done via adventure scene)
 Triggers doing something
 
 Camera Follow (maybe with some tricks)
