@@ -5,12 +5,12 @@ DONE - player create function
 DONE - player speed options // some how have a speed,animation,key thing
 DONE - player backup when hitting a collision (maybe even a step back animation)
 
-Using the imported objects correctly 
+Using the imported objects correctly
 
 Highlighting of meshes on click (possible done via adventure scene)
 Triggers doing something
 
 Camera Follow (maybe with some tricks)
-Camera zoom in and out?
+Camera zoom in and out? -- later. There will be a button
 
 Change Scene

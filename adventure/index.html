@@ -43,6 +43,7 @@
     <script src='/A3D-Modules/Adventure/Adventure.js'></script>
     <script src='/A3D-Modules/Adventure/Adventure.Ground.js'></script>
     <script src='/A3D-Modules/Adventure/Adventure.Player.js'></script>
+    <script src='/A3D-Modules/Adventure/Adventure.Camera.js'></script>
 
     <style>
         html, body {
@@ -66,15 +67,24 @@
       game.inputs.mouse.addToInputMap('leftmouse');
 
       next = function(game){
+
         for(s in game.activeScenes){
           scene = game.activeScenes[s];
         }
 
-        camera = scene.b3Dscene.cameras[0];
+        //from import it would be A3D._Camera
+        //you can have b3Dcamera as well
+        scene.camera = new A3D.Game.Adventure.Camera({
+          scene: scene
+        });
+
         //TODO the scene crater should make this the ground
-        scene.ground = new A3D.Game.Adventure.Ground();
-        scene.ground.addMeshTo(scene.b3Dscene.getMeshByName('Ground'));
-        scene.ground.addControls(game);
+        //from import it would be A3D._Ground
+        scene.ground = new A3D.Game.Adventure.Ground({
+          scene : scene,
+          b3Dmeshes : [scene.b3Dscene.getMeshByName('Ground')]
+        });
+
 
         var lNext = function(nm){
           nm.meshes[0].visibility = 0;//this should be done in the blender
@@ -170,6 +180,8 @@
             });
           }
         });
+
+        /*
         game.createAction({
           name : 'moveCamera',
           id : 'moveCamera',
@@ -179,6 +191,8 @@
               camera.position.z = scene.player.position.z-6;
           }
         })
+        */
+
         game.run();
       };
 
@@ -199,7 +213,6 @@
       }
 
       var c = new A3D.Controls({input : game.inputs.mouse});
-
       c.addfuncToMap('leftmouse','highlight',f.func,null,f.afterFunc);
       c.addControlsToGame(game);
 
