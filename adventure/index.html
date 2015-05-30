@@ -57,7 +57,7 @@
 <body>
     <div id='game'></div>
 <script>
-    var game,scene,ob;
+    var game,scene,camera;
     function start(){
       game = new A3D.Game.Adventure({
         containerId:'game'
@@ -70,12 +70,11 @@
           scene = game.activeScenes[s];
         }
 
+        camera = scene.b3Dscene.cameras[0];
         //TODO the scene crater should make this the ground
         scene.ground = new A3D.Game.Adventure.Ground();
         scene.ground.addMeshTo(scene.b3Dscene.getMeshByName('Ground'));
         scene.ground.addControls(game);
-
-
 
         var lNext = function(nm){
           nm.meshes[0].visibility = 0;//this should be done in the blender
@@ -114,8 +113,8 @@
         };
 
         scene.importMeshesFromFile("/adventure/scenes/", "gototarget.babylon", "", lNext);
-
         scene.importMeshesFromFile("/adventure/scenes/", "objects.babylon", "", oNext);
+
 
         var animMap = [
           {
@@ -169,25 +168,17 @@
                 this.runAnimation('running')
               }.bind(this)
             });
-            /*
-            game.createAction({
-              name : 'checkTarget',
-              id : 'checkTarget',
-              active : true,
-              func : function(){
-                if(this._gotoTarget.isActive){
-                  this.moveToTarget()
-                } else {
-                  if(this.activeAnimation != 'idle' && !this.activeAction){
-                    this.runAnimation('idle');
-                  }
-                }
-              }.bind(this)
-
-            });
-            */
           }
         });
+        game.createAction({
+          name : 'moveCamera',
+          id : 'moveCamera',
+          active : true,
+          func : function(){
+              camera.position.x = scene.player.position.x;
+              camera.position.z = scene.player.position.z-6;
+          }
+        })
         game.run();
       };
 
