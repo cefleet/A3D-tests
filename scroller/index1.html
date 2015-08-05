@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Space test</title>
+
+    <script src="/libs/babylon.2.1-beta.debug.js"></script>
+    <script src="/A3D/source/A3D.js"></script>
+    <script src="/A3D/source/classes/Game.js"></script>
+    <script src="/A3D/source/classes/MeshObject.js"></script>
+    <script src="/A3D/source/classes/Scene.js"></script>
+
+    <script src="/A3D/source/classes/Actor.js"></script>
+    <script src="/A3D/source/classes/Actor.Player.js"></script>
+
+    <script src="/A3D/source/classes/Camera.js"></script>
+    <script src="/A3D/source/classes/Camera.Follow.js"></script>
+
+    <script src="/A3D/source/classes/Resource.js"></script>
+
+    <script src="/A3D/source/classes/Controls.js"></script>
+
+    <script src="/A3D/source/classes/Input.js"></script>
+    <script src="/A3D/source/classes/Input.Keyboard.js"></script>
+    <script src="/A3D/source/classes/Input.Mouse.js"></script>
+
+    <script src="/A3D/source/classes/Overlay.js"></script>
+    <script src="/A3D/source/classes/Object2D.js"></script>
+    <script src="/A3D/source/classes/Object2D.Image.js"></script>
+
+    <script src="/A3D/source/classes/Action.js"></script>
+
+    <script src="/A3D/source/classes/Trigger.js"></script>
+    <script src="/A3D/source/classes/Trigger.Object3D.js"></script>
+    <script src="/A3D/source/classes/Trigger.Object3D.Collision.js"></script>
+    <script src="/A3D/source/classes/Trigger.Object3D.Collision.SceneChange.js"></script>
+
+    <script src="/A3D/source/classes/SkeletonAnimations.js"></script>
+
+    <script src="/A3D/source/classes/Obstacle.js"></script>
+    <script src="/A3D/source/classes/Obstacle.Boundry.js"></script>
+
+    <script src='/A3D/source/classes/Ground.js'></script>
+
+
+    <script src='/A3D-Modules/Scroller/Scroller.js'></script>
+    <script src='/A3D-Modules/Scroller/Scroller.Player.js'></script>
+
+
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id='game'></div>
+<script>
+    var game,scene,o,i,loose,win;
+
+    function start(){
+
+    game = new A3D.Game.Scroller({
+        containerId:'game',//Probably not needed
+        playerName : 'SpineyShell',//remove when possible
+        lives: 3,
+        speed : 0.2,
+        actionButton: 'leftmouse',
+        collisionNames : ['Icosphere','Cube'],//remove when possible
+        endTrigger : 'Trigger.End',
+        screenImages : [
+          {
+            src:'/loganGame/drawing.png',
+            id : 'mainScreen'
+          },
+          {
+            src : '/loganGame/you_lose.png',
+            id : 'loseScreen'
+          },
+          {
+            src : '/loganGame/you_win.png',
+            id : 'winScreen'
+          }
+        ],
+        livesImage : {
+          src : '/loganGame/heart.png',
+          dX:0,
+          dY:10,
+          dWidth:30,
+          dHeight:30
+        }
+    });
+
+    //this is game
+    var setup = function(){
+        //TODO this is where you can add your own game logic
+        for(s in this.activeScenes){
+          scene = this.activeScenes[s];
+        }
+    }
+
+    //loads the scene
+    //TODO not handling coming from different files yet.. need to consider how to do that
+    game.loadScene('/nickjgame/','myland.babylon',setup);
+}
+  //TODO add this somehow to the game
+  document.addEventListener( "DOMContentLoaded", start, false );
+
+</script>
+ </body>
+</html>
