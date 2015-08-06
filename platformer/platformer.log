@@ -6,9 +6,17 @@
 	processing begun of material:  platformer.Material.002
 	processing begun of material:  platformer.Material.003
 	processing begun of material:  platformer.Material.004
+	processing begun of material:  platformer.Material.005
 	processing begun of material:  platformer.Material.012
 	Diffuse texture found
 Error encountered processing image file:  /home/cefleet/A3D-tests/platformer/game-background.jpg, Error:  '/home/cefleet/A3D-tests/platformer/game-background.jpg' and '/home/cefleet/A3D-tests/platformer/game-background.jpg' are the same file
+	processing begun of mesh:  Cube
+		num positions      :  8
+		num normals        :  8
+		num uvs            :  0
+		num uvs2           :  0
+		num colors         :  0
+		num indices        :  36
 	processing begun of mesh:  Icosphere
 		WARNING:  No materials have been assigned: 
 		num positions      :  42

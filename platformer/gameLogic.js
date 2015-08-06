@@ -78,10 +78,12 @@ var myGame = {
           fontSize : '30',
           texts : {
             first: {
-              text:'This is the first text'
+              text:'This is the first text',
+              next:'second'
             },
             second : {
-              text: 'This is the second text'
+              text: 'This is the second text',
+              next:'first'
             }
           }
         }
