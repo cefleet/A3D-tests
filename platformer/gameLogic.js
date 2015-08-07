@@ -7,11 +7,13 @@ var myGame = {
       rightButton : 68,
       gravity : -0.5,
       jumpForce : 4,
+    //  forceResolution : true,
+    //  targetRes : [640,480],
       actionButton: 'leftmouse',
       endTrigger : 'Trigger.End',
       playerSettings : {
         meshName: 'Chris',
-        rootUrl: '/platformer/',
+        rootUrl: './',
         file:'chris.babylon',
         spawnPoint : 'InitialSpawn',
         animationsSetup : [
@@ -110,7 +112,6 @@ var myGame = {
   },
 
   scripts : function(){
-
     var scene = myGame.game.player.scene;
     //TODO this is where you can add your own game logic
     myGame.game.setupEnd = function(scene){
@@ -138,19 +139,32 @@ var myGame = {
     });
 
     myGame.game.showWinScreen = function(){
-      this.resetLevel();
-      this.showScreen('winScreen');
-      this.pause();
-    },
+      //this.resetLevel();
+    //  this.showScreen('winScreen');
+    //  this.pause();
+      myGame.game.player.scene.dispose();
+      myGame.game.loadScene('./','platformer_scene2.babylon',myGame.scripts);
+    };
 
-    myGame.game.setupEnd(scene);
-    myGame.game.showScreen('mainScreen');
+   myGame.game.setupEnd(scene);
+   myGame.game.showScreen('mainScreen');
+
+   //This works. I just want the intro to run every time
+/*
+    var introVideo = new A3D.Video({videoFile:'/platformer/aletheia.webm'},myGame.game);
+    introVideo.show();
+    introVideo.play();
+    introVideo.onPlaybackEnd = function(){
+      myGame.game.showScreen('mainScreen');
+    }
+*/
   }
 };
 
 function start(){
+  //TODO it may make sense to do things a little different. for example make a "player" json file that is loaded
     myGame.game = new A3D.Game.Platformer(myGame.config);
-    myGame.game.loadScene('/platformer/','platformer.babylon',myGame.scripts);
+    myGame.game.loadScene('./','platformer.babylon',myGame.scripts);
 }
 
-document.addEventListener( "DOMContentLoaded", start, false );
+document.addEventListener("DOMContentLoaded", start, false );
