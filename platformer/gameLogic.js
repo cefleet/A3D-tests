@@ -6,12 +6,14 @@ var myGame = {
       leftButton : 65,
       rightButton : 68,
       gravity : -0.5,
-      jumpForce : 4,
+
     //  forceResolution : true,
     //  targetRes : [640,480],
       actionButton: 'leftmouse',
       endTrigger : 'Trigger.End',
       playerSettings : {
+        jumpAccel : 0.8,
+        jumpForce : 1.5,
         meshName: 'Chris',
         rootUrl: './',
         file:'chris.babylon',
@@ -56,7 +58,7 @@ var myGame = {
         },
         boundsOffset : {
           z : -2,
-          x : -2,
+          x : -3,
           y: 13.4
         }
 
@@ -90,13 +92,6 @@ var myGame = {
           }
         }
       ],
-      livesImage : {
-        src : '/scroller/heart.png',
-        dX:0,
-        dY:10,
-        dWidth:30,
-        dHeight:30
-      },
       cameraSettings : {
         offset : {
           x : 30,
@@ -114,6 +109,7 @@ var myGame = {
   scripts : function(){
     var scene = myGame.game.player.scene;
     //TODO this is where you can add your own game logic
+    //TODO this trigger should not need this added
     myGame.game.setupEnd = function(scene){
       var te = scene.b3Dscene.getMeshByName(this.endTrigger);
       if(te){
@@ -128,13 +124,16 @@ var myGame = {
       name : 'checkIfAtEnd',
       id : 'checkIfAtEnd',
       func : function(){
-        if(this.player._collidingWithTriggers.length >= 1){
-          for(var i = 0; i < this.player._collidingWithTriggers.length; i++){
-            if(this.player._collidingWithTriggers[i].id === this.endTrigger.name){
+        if(this.player._collidingWithTrigger){
+        if(this.player._collidingWithTrigger.length >= 1){
+          console.log('I am hitting a trigger');
+          for(var i = 0; i < this.player._collidingWithTrigger.length; i++){
+            if(this.player._collidingWithTrigger[i].id === this.endTrigger.name){
               this.showWinScreen();
             }
           }
         }
+      }
       }.bind(this)
     });
 
